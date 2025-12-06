@@ -103,7 +103,7 @@ class ExperimentConfig:
     evaluation: EvaluationConfig = field(default_factory=EvaluationConfig)
     
     # Wandb logging (optional)
-    use_wandb: bool = False
+    use_wandb: bool = True
     wandb_project: str = 'ortho-causal-vae'
     wandb_entity: Optional[str] = None
 

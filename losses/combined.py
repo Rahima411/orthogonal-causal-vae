@@ -30,10 +30,17 @@ def total_loss(
         recon = reconstruction_loss(x_recon, x, "bce")
 
     kl = kl_divergence(mu, logvar)
-    ortho = orthogonality_loss(mu)
-    causal = causal_independence_loss(mu, causal_graph)
+    if lambda_ortho > 0:
+        ortho = orthogonality_loss(mu)
+    else:
+        ortho = torch.tensor(0.0, device=mu.device)
 
-    loss = recon + beta * kl + ortho + causal
+    if lambda_causal > 0:
+        causal = causal_independence_loss(mu, causal_graph)
+    else:
+        causal = torch.tensor(0.0, device=mu.device)
+
+    loss = recon + beta * kl + lambda_ortho * ortho + lambda_causal * causal
 
     metrics = {
         "recon": recon.item(),

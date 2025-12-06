@@ -210,3 +210,6 @@ __marimo__/
 logs/
 wandb/
 checkpoints/
+
+# Data
+data/

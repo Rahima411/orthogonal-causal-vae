@@ -49,7 +49,12 @@ def set_seed(seed):
 def get_model(name, latent_dim, causal_graph=None):
     if name not in MODEL_REGISTRY:
         raise ValueError(f"Unknown model: {name}")
-    return MODEL_REGISTRY[name](latent_dim=latent_dim, causal_graph=causal_graph)
+    
+    # Only pass causal_graph to models that support it
+    if name in ['causal_vae', 'ortho_causal_vae']:
+        return MODEL_REGISTRY[name](latent_dim=latent_dim, causal_graph=causal_graph)
+    else:
+        return MODEL_REGISTRY[name](latent_dim=latent_dim)
 
 
 def train_epoch(model, loader, optimizer, cfg, causal_graph):
@@ -108,6 +113,18 @@ def main():
     
     # Ensure device is set correcty
     cfg.training.device = "cuda" if torch.cuda.is_available() else "cpu"
+
+    # Enforce pure baseline for non-hybrid models and constraints
+    if cfg.model.name in ['vae', 'beta_vae']:
+        print(f"\n[INFO] Enforcing pure baseline for {cfg.model.name}: Setting lambda_ortho=0, lambda_causal=0")
+        cfg.model.lambda_ortho = 0.0
+        cfg.model.lambda_causal = 0.0
+    elif cfg.model.name == 'ortho_vae':
+        print(f"\n[INFO] Enforcing constraint for {cfg.model.name}: Setting lambda_causal=0")
+        cfg.model.lambda_causal = 0.0
+    elif cfg.model.name == 'causal_vae':
+        print(f"\n[INFO] Enforcing constraint for {cfg.model.name}: Setting lambda_ortho=0")
+        cfg.model.lambda_ortho = 0.0
 
     # Set seed
     set_seed(cfg.training.seed)
