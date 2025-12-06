@@ -268,7 +268,11 @@ def main():
         torch.save(model.state_dict(), final_model_path)
         
         print("\n Running Final Verification & Evaluation...")
-        eval_metrics = evaluate_model(model, loader, cfg.training.device)
+        eval_metrics = evaluate_model(
+                            model, loader, cfg.training.device,
+                            compute_disentanglement=True,
+                            save_figures_dir=figures_dir
+                        )
         
         # Combine final train metrics with evaluation metrics
         result_entry = {
