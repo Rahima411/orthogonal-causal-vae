@@ -49,13 +49,13 @@ class TrainingConfig:
     """Training configuration"""
     epochs: int = 50
     learning_rate: float = 1e-3
-    weight_decay: float = 0.0
+    weight_decay: float = 1e-5
     scheduler: str = 'cosine'  # 'none', 'step', 'cosine'
     scheduler_params: Dict = field(default_factory=dict)
     
     # Optimization
-    optimizer: str = 'adam'  # 'adam', 'adamw', 'sgd'
-    gradient_clip: float = 0.0  # 0 = no clipping
+    optimizer: str = 'adamw'  # 'adam', 'adamw', 'sgd'
+    gradient_clip: float = 1.0  # 0 = no clipping
     
     # Logging
     log_interval: int = 100  # Log every N batches
@@ -95,6 +95,7 @@ class ExperimentConfig:
     output_dir: str = './outputs'
     checkpoint_dir: str = './checkpoints'
     log_dir: str = './logs'
+    fig_dir: str = './figures'
     
     # Sub-configurations
     data: DataConfig = field(default_factory=DataConfig)
