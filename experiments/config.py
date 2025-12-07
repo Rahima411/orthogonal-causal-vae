@@ -123,8 +123,10 @@ def get_dsprites_config():
     config.model.img_channels = 1
     config.model.latent_dim = 10
     config.model.beta = 4.0
-    config.model.lambda_ortho = 1.0
-    config.model.lambda_causal = 0.5
+    # config.model.lambda_ortho = 1.0
+    # config.model.lambda_causal = 0.5
+    config.model.lambda_ortho = 0.5 
+    config.model.lambda_causal = 0.3 
     
     return config
 

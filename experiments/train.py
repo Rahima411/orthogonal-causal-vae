@@ -266,6 +266,10 @@ def main():
         # 3. Final Evaluation
         final_model_path = os.path.join(seed_log_dir, f"{cfg.model.name}_final_model.pt")
         torch.save(model.state_dict(), final_model_path)
+
+        figures_dir = os.path.join("figures", f"{seed}_{cfg.model.name}")
+        os.makedirs(figures_dir, exist_ok=True)
+        print(f"Figures → {figures_dir}")
         
         print("\n Running Final Verification & Evaluation...")
         eval_metrics = evaluate_model(
@@ -291,6 +295,9 @@ def main():
         # Finish WandB run for this seed
         if cfg.use_wandb:
             import wandb
+            wandb.log(eval_metrics)
+            for fig_file in os.listdir(figures_dir):
+                wandb.log({f"figures/{fig_file}": wandb.Image(os.path.join(figures_dir, fig_file))})
             wandb.finish()
 
     # -------------------------------------------------------------------------
